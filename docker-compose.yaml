@@ -12,7 +12,7 @@ services:
     volumes:
       - .:/home/node/app
     networks:
-      - app_ms-catalog
+      - ms-catalog
       - rabbitmq_ms-catalog
 
   elasticsearch:
@@ -25,17 +25,17 @@ services:
     ports:
       - 9200:9200
     networks:
-      - app_ms-catalog
+      - ms-catalog
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.5.1
     ports:
       - 5601:5601
     networks:
-      - app_ms-catalog
+      - ms-catalog
 
 networks:
-  app_ms-catalog:
+  ms-catalog:
     driver: bridge
   rabbitmq_ms-catalog:
     external: true
