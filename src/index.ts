@@ -1,3 +1,4 @@
+import './bootstrap';
 import {ApplicationConfig, MsCatalogApplication} from './application';
 
 export * from './application';
