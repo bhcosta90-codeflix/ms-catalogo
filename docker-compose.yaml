@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  app:
+  ms_catalog_app:
     build: .
     entrypoint: ./.docker/entrypoint.sh
     ports:
@@ -14,7 +14,7 @@ services:
       - ms-catalog
       - rabbitmq_ms-catalog
 
-  elasticsearch:
+  ms_catalog_elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     environment:
       - discovery.type=single-node
@@ -25,8 +25,10 @@ services:
     networks:
       - ms-catalog
 
-  kibana:
+  ms_catalog_kibana:
     image: docker.elastic.co/kibana/kibana:7.5.1
+    environment:
+      - ELASTICSEARCH_HOSTS=http://ms_catalog_elasticsearch:9200
     ports:
       - 5601:5601
     networks:
