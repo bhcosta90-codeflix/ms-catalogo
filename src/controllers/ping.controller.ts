@@ -1,5 +1,7 @@
-import {Request, RestBindings, get, ResponseObject} from '@loopback/rest';
 import {inject} from '@loopback/context';
+import {repository} from '@loopback/repository';
+import {get, Request, ResponseObject, RestBindings} from '@loopback/rest';
+import {CategoryRepository} from './../repositories';
 
 /**
  * OpenAPI response for ping()
@@ -33,7 +35,8 @@ const PING_RESPONSE: ResponseObject = {
  */
 export class PingController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
-
+  @repository(CategoryRepository)
+  private categoryRepository: CategoryRepository;
   // Map to `GET /ping`
   @get('/ping', {
     responses: {
@@ -48,5 +51,9 @@ export class PingController {
       url: this.req.url,
       headers: Object.assign({}, this.req.headers),
     };
+  }
+  @get('/categories')
+  index() {
+    return this.categoryRepository.find();
   }
 }

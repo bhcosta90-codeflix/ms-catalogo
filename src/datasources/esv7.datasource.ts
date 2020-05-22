@@ -12,6 +12,7 @@ const config = {
     requestTimeout: process.env.ELASTICSEARCH_REQUEST_TIMEOUT,
     pingTimeout: process.env.ELASTICSEARCH_PING_TIMEOUT,
   },
+  mappingProperties: {},
 };
 
 // Observe application's life cycle to disconnect the datasource when
