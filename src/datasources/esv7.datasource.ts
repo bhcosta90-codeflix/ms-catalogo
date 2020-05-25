@@ -1,18 +1,14 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
+import configJson from './esv7.datasource.config.json';
 
 const config = {
-  name: 'esv7',
-  connector: 'esv6',
-  index: 'catalog',
-  apiVersion: '7',
-  defaultSize: '',
+  ...configJson,
   configuration: {
     node: process.env.ELASTICSEARCH,
     requestTimeout: process.env.ELASTICSEARCH_REQUEST_TIMEOUT,
     pingTimeout: process.env.ELASTICSEARCH_PING_TIMEOUT,
   },
-  mappingProperties: {},
 };
 
 // Observe application's life cycle to disconnect the datasource when
