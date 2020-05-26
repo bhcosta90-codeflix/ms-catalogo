@@ -7,3 +7,6 @@ help:
 up: ## Inicia o Rabbitmq e o projeto
 	docker-compose -f ./../rabbitmq/docker-compose.yaml up -d --force-recreate
 	docker-compose -f docker-compose.yaml up -d --force-recreate
+
+bash: ## Inicia o bash
+	docker-compose -f docker-compose.yaml exec ms_video_app bash
