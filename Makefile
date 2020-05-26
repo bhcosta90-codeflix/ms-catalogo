@@ -5,5 +5,5 @@ help:
 	@grep -E '^[-a-zA-Z0-9_\.\/]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[32m%-30s\033[0m %s\n", $$1, $$2}'
 
 up: ## Inicia o Rabbitmq e o projeto
-	docker-compose -f docker-compose.yaml up -d --force-recreate
 	docker-compose -f ./../rabbitmq/docker-compose.yaml up -d --force-recreate
+	docker-compose -f docker-compose.yaml up -d --force-recreate
