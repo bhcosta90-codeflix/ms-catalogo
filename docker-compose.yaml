@@ -14,7 +14,7 @@ services:
       - ms-catalog
       - rabbitmq_ms-catalog
 
-  ms_catalog_elasticsearch:
+  ms_catalog_es:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     environment:
       - discovery.type=single-node
@@ -28,7 +28,7 @@ services:
   ms_catalog_kibana:
     image: docker.elastic.co/kibana/kibana:7.5.1
     environment:
-      - ELASTICSEARCH_HOSTS=http://ms_catalog_elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://ms_catalog_es:9200
     ports:
       - 5601:5601
     networks:
