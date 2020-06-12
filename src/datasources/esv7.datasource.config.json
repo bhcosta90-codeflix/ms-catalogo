@@ -2,7 +2,7 @@
   "name": "esv7",
   "connector": "esv6",
   "index": "catalog",
-  "version": "7",
+  "version": 7,
   "defaultSize": "",
   "mappingProperties": {}
 }
