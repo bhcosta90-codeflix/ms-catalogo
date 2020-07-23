@@ -5,6 +5,7 @@ help:
 	@grep -E '^[-a-zA-Z0-9_\.\/]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[32m%-30s\033[0m %s\n", $$1, $$2}'
 
 install: ## Instala as configurações do elasticsearch
+	cp .env.example .env || true
 	sudo mkdir .data/elasticdata -p
 	sudo chmod 777 -R .data/elasticdata
 
