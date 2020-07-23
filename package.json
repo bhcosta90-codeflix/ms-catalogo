@@ -44,26 +44,26 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^2.3.1",
-    "@loopback/context": "^3.8.1",
-    "@loopback/core": "^2.7.0",
-    "@loopback/openapi-v3": "^3.4.1",
-    "@loopback/repository": "^2.5.1",
-    "@loopback/rest": "^5.0.1",
-    "@loopback/rest-explorer": "^2.2.2",
-    "@loopback/service-proxy": "^2.3.0",
+    "@loopback/boot": "^2.4.0",
+    "@loopback/context": "^3.9.3",
+    "@loopback/core": "^2.9.2",
+    "@loopback/openapi-v3": "^3.4.6",
+    "@loopback/repository": "^2.10.0",
+    "@loopback/rest": "^5.2.1",
+    "@loopback/rest-explorer": "^2.2.7",
+    "@loopback/service-proxy": "^2.3.5",
     "dotenv": "^8.2.0",
     "loopback-connector-esv6": "https://github.com/codeedu/loopback-connector-elastic-search",
-    "tslib": "^1.10.0"
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@loopback/build": "^5.4.1",
+    "@loopback/build": "^6.1.1",
     "source-map-support": "^0.5.19",
-    "@loopback/testlab": "^3.1.5",
-    "@types/node": "^10.17.24",
-    "@loopback/eslint-config": "^7.0.1",
-    "eslint": "^7.0.0",
-    "typescript": "~3.9.3"
+    "@loopback/testlab": "^3.2.1",
+    "@types/node": "^10.17.27",
+    "@loopback/eslint-config": "^8.0.4",
+    "eslint": "^7.5.0",
+    "typescript": "~3.9.7"
   },
   "nodemonConfig": {
     "verbose": true,
