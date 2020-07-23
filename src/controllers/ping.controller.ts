@@ -53,7 +53,13 @@ export class PingController {
     };
   }
   @get('/categories')
+  // async index() {
   index() {
+    // await this.categoryRepository.create({
+    //   id: '3',
+    //   name: "bruno costa",
+    //   description: "oi"
+    // })
     return this.categoryRepository.find();
   }
 }
