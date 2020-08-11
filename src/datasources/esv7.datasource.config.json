@@ -3,6 +3,6 @@
   "connector": "esv6",
   "index": "catalog",
   "version": 7,
-  "defaultSize": "",
+  "defaultSize": "50",
   "mappingProperties": {}
 }
