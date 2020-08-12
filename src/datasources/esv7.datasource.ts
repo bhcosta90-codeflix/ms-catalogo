@@ -4,6 +4,8 @@ import configJson from './esv7.datasource.config.json';
 
 const config = {
   ...configJson,
+  // defaultSize: 50,
+  debug: process.env.APP_ENV === 'dev',
   configuration: {
     node: process.env.ELASTICSEARCH,
     requestTimeout: process.env.ELASTICSEARCH_REQUEST_TIMEOUT,

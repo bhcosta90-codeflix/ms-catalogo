@@ -1,6 +1,6 @@
 import {inject} from '@loopback/context';
 import {repository} from '@loopback/repository';
-import {get, Request, ResponseObject, RestBindings} from '@loopback/rest';
+import {get, post, Request, ResponseObject, RestBindings} from '@loopback/rest';
 import {CategoryRepository} from './../repositories';
 
 /**
@@ -53,13 +53,20 @@ export class PingController {
     };
   }
   @get('/categories')
-  // async index() {
   index() {
-    // await this.categoryRepository.create({
-    //   id: '3',
-    //   name: "bruno costa",
-    //   description: "oi"
-    // })
     return this.categoryRepository.find();
+  }
+
+  @post('/categories')
+  async store() {
+    await this.categoryRepository.create({
+      id: Math.floor(Date.now() / 1000).toString(),
+      name: 'bruno costa',
+      description: 'oi',
+    });
+    return {
+      status: true,
+      msg: 'Categoria cadastrada com sucesso',
+    };
   }
 }
