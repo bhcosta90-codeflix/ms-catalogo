@@ -10,7 +10,7 @@ install: ## Instala as configurações do elasticsearch
 	sudo chmod 777 -R .data/elasticdata
 
 up: ## Inicia o Rabbitmq e o projeto
-	docker-compose -f ./../rabbitmq/docker-compose.yaml up -d --force-recreate
+	docker-compose -f ./../inte-rabbitmq/docker-compose.yaml up -d --force-recreate
 	docker-compose -f docker-compose.yaml up -d --force-recreate
 
 bash: ## Inicia o bash
