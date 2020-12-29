@@ -4,30 +4,31 @@ import {repository} from "@loopback/repository";
 import {CastMemberRepository} from "../repositories";
 
 @bind({scope: BindingScope.TRANSIENT})
-export class CategorySyncService {
+export class CastMemberSyncService {
   constructor(
-      @repository(CastMemberRepository) private categoryRepo: CastMemberRepository
+      @repository(CastMemberRepository) private castMemberRepo: CastMemberRepository
   ) {}
 
   @RabbitmqSubscribe({
       exchange: 'amq.topic',
       queue: 'ms-catalogo/sync-videos',
-      routingKey: 'model.category.*'
+      routingKey: 'model.cast-member.*'
   })
   async handler({data, action}: {data: any, action: any}) {
+      console.log(data, action)
       switch(action){
           case 'created':
-              await this.categoryRepo.create({
+              await this.castMemberRepo.create({
                   ...data,
                   created_at: new Date().toISOString(),
                   updated_at: new Date().toISOString()
               })
               break;
           case 'updated':
-              await this.categoryRepo.updateById(data.id, data)
+              await this.castMemberRepo.updateById(data.id, data)
               break;
           case 'deleted':
-              await this.categoryRepo.deleteById(data.id)
+              await this.castMemberRepo.deleteById(data.id)
               break;
       }
 

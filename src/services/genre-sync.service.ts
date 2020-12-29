@@ -1,35 +1,34 @@
 import {bind, /* inject, */ BindingScope} from '@loopback/core';
 import {RabbitmqSubscribe} from "../decorators";
 import {repository} from "@loopback/repository";
-import {CastMemberRepository} from "../repositories";
+import {GenreRepository} from "../repositories/genre.repository";
 
 @bind({scope: BindingScope.TRANSIENT})
-export class CategorySyncService {
+export class GenreSyncService {
   constructor(
-      @repository(CastMemberRepository) private categoryRepo: CastMemberRepository
+      @repository(GenreRepository) private genreRepo: GenreRepository
   ) {}
 
   @RabbitmqSubscribe({
       exchange: 'amq.topic',
       queue: 'ms-catalogo/sync-videos',
-      routingKey: 'model.category.*'
+      routingKey: 'model.genre.*'
   })
   async handler({data, action}: {data: any, action: any}) {
       switch(action){
           case 'created':
-              await this.categoryRepo.create({
+              await this.genreRepo.create({
                   ...data,
                   created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString()
+                  updated_at: new Date().toISOString(),
               })
               break;
           case 'updated':
-              await this.categoryRepo.updateById(data.id, data)
+              await this.genreRepo.updateById(data.id, data)
               break;
           case 'deleted':
-              await this.categoryRepo.deleteById(data.id)
+              await this.genreRepo.deleteById(data.id)
               break;
       }
-
   }
 }

@@ -2,7 +2,7 @@ import {Application, Binding, Context, CoreBindings, Server} from '@loopback/cor
 import {Channel, ConfirmChannel, Options, Replies} from 'amqplib';
 import AssertQueue = Replies.AssertQueue;
 import AssertExchange = Replies.AssertExchange;
-import {CategoryRepository} from "../repositories";
+import {CastMemberRepository} from "../repositories";
 import {repository} from "@loopback/repository";
 import {inject} from "@loopback/context";
 import {RabbitmqBindings} from "../keys";
@@ -25,7 +25,7 @@ export class RabbitmqServer extends Context implements Server {
   constructor(
       @inject(CoreBindings.APPLICATION_INSTANCE) public app: Application,
       @inject(RabbitmqBindings.CONFIG) private config: RabbitmqConfig,
-      @repository(CategoryRepository) private categoryRepo: CategoryRepository
+      @repository(CastMemberRepository) private categoryRepo: CastMemberRepository
   ) {
     super(app);
   }
@@ -122,7 +122,9 @@ export class RabbitmqServer extends Context implements Server {
           } catch (e) {
             data = null;
           }
-          await method({data, message, channel})
+
+          const [action] = message.fields.routingKey.split('.').slice(2);
+          await method({data, message, channel, action})
           channel.ack(message)
         }
       } catch (e) {

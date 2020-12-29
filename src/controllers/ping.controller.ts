@@ -1,7 +1,7 @@
 import {inject} from '@loopback/context';
 import {repository} from '@loopback/repository';
 import {get, post, Request, ResponseObject, RestBindings} from '@loopback/rest';
-import {CategoryRepository} from './../repositories';
+import {CastMemberRepository, GenreRepository, CategoryRepository} from './../repositories';
 
 /**
  * OpenAPI response for ping()
@@ -37,6 +37,10 @@ export class PingController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
   @repository(CategoryRepository)
   private categoryRepository: CategoryRepository;
+  @repository(GenreRepository)
+  private genreRepository: GenreRepository;
+  @repository(CastMemberRepository)
+  private castMemberRepository: CastMemberRepository;
   // Map to `GET /ping`
   @get('/ping', {
     responses: {
@@ -53,8 +57,18 @@ export class PingController {
     };
   }
   @get('/categories')
-  index() {
+  getCategories() {
     return this.categoryRepository.find();
+  }
+
+  @get('/genres')
+  getGenres() {
+    return this.genreRepository.find();
+  }
+
+  @get('/castmembers')
+  getCastMembers() {
+    return this.castMemberRepository.find();
   }
 
   @post('/categories')
