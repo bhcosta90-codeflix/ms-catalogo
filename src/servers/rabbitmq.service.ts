@@ -1,59 +1,134 @@
-import {ApplicationConfig, Context, CoreBindings, Server} from '@loopback/core';
-import {Channel, connect, Connection, Replies} from 'amqplib';
+import {Application, Binding, Context, CoreBindings, Server} from '@loopback/core';
+import {Channel, ConfirmChannel, Options, Replies} from 'amqplib';
 import AssertQueue = Replies.AssertQueue;
 import AssertExchange = Replies.AssertExchange;
 import {CategoryRepository} from "../repositories";
 import {repository} from "@loopback/repository";
 import {inject} from "@loopback/context";
 import {RabbitmqBindings} from "../keys";
+import {AmqpConnectionManager, AmqpConnectionManagerOptions, ChannelWrapper, connect} from "amqp-connection-manager";
+import {MetadataInspector} from "@loopback/metadata"
+import {RabbitmqSubscribeMetada, RABBITMQ_SUBSCRIBE_DECORATOR} from "../decorators";
 
 export interface RabbitmqConfig {
-  uri: string
+  uri: string,
+  connOptions?: AmqpConnectionManagerOptions
+  exchanges?: { name: string, type: string, options?: Options.AssertExchange }[]
 }
 
 export class RabbitmqServer extends Context implements Server {
   private _listening: boolean;
-  conn: Connection;
+  private _conn: AmqpConnectionManager;
+  private _channelWrapper: ChannelWrapper;
   channel: Channel;
 
   constructor(
+      @inject(CoreBindings.APPLICATION_INSTANCE) public app: Application,
       @inject(RabbitmqBindings.CONFIG) private config: RabbitmqConfig,
       @repository(CategoryRepository) private categoryRepo: CategoryRepository
   ) {
-    super();
-    console.log(this.config);
+    super(app);
   }
 
   async start(): Promise<void> {
-    this.conn = await connect(this.config.uri);
-    this._listening = true;
-    this.boot()
+    this._conn = connect([this.config.uri], this.config.connOptions);
+    this._channelWrapper = this._conn.createChannel()
+    this._channelWrapper.on('connect', () => {
+      console.log('SUCCESSFUL - Connected rabbitmq channel')
+      this._listening = true;
+    }).on('error', (err, {name}) => {
+      this._listening = false;
+      console.log(`FAILED - Rabbitmq setup - name = ${name} | error = ${err}`)
+    })
+    await this.setupExchanges()
+    await this.bindingSubscribers();
+    // this.boot()
   }
 
-  async boot(){
-    this.channel = await this.conn.createChannel();
-    const queue: AssertQueue = await this.channel.assertQueue('ms-catalogo/sync-videos')
-    const exchange: AssertExchange = await this.channel.assertExchange('amq.topic', 'topic');
-
-    await this.channel.bindQueue(queue.queue, exchange.exchange, 'model.*.*');
-
-    // const result = channel.sendToQueue('first-queue', Buffer.from('hello-world'))
-    // const result = channel.publish('amq.direct', 'routing-first-queue', Buffer.from('publicado por routing key'))
-
-    this.channel.consume(queue.queue, (message) => {
-      if(!message) {
+  private async setupExchanges() {
+    return this._channelWrapper.addSetup(async (channel: ConfirmChannel) => {
+      if (!this.config.exchanges)
         return;
+
+      await Promise.all(this.config.exchanges.map((exchange) => {
+        // eslint-disable-next-line no-void
+        void channel.assertExchange(exchange.name, exchange.type, exchange.options);
+      }))
+    })
+  }
+
+  private async bindingSubscribers() {
+    this.getSubscribers()
+        .map(async item => {
+          await this._channelWrapper.addSetup(async (channel: ConfirmChannel) => {
+            const {exchange, routingKey, queueOptions, queue} = item.metadata
+            const assertQueue = await channel.assertQueue(queue ?? '', queueOptions ?? undefined)
+            const routingKeys = Array.isArray(routingKey) ? routingKey : [routingKey]
+
+            await Promise.all(routingKeys.map((routing: string) => channel.bindQueue(assertQueue.queue, exchange, routing)));
+
+            await this.consume({
+              channel,
+              queue: assertQueue.queue,
+              method: item.method
+            })
+          });
+        });
+  }
+
+  private getSubscribers(): { method: Function, metadata: RabbitmqSubscribeMetada }[] {
+    const bindings: Array<Readonly<Binding>> = this.find('services.*');
+    return bindings.map(binding => {
+      const metadata = MetadataInspector.getAllMethodMetadata<RabbitmqSubscribeMetada>(
+          RABBITMQ_SUBSCRIBE_DECORATOR, binding.valueConstructor?.prototype)
+      if (!metadata) {
+        return [];
       }
 
-      const data = (JSON.parse(message.content.toString()))
-      const [model, action] = message.fields.routingKey.split('.').slice(1);
-      this.sync({model, action, data})
-          .then(() => this.channel.ack(message))
-          .catch((error) => {
-            console.log(error)
-            this.channel.reject(message, false)
-          })
-    });
+      const methods: Array<any> = [];
+
+      for (const methodName in metadata) {
+        if (!Object.prototype.hasOwnProperty.call(metadata, methodName)) {
+          return;
+        }
+        const service = this.getSync(binding.key) as any
+
+        methods.push({
+          method: service[methodName].bind(service),
+          metadata: metadata[methodName]
+        })
+      }
+
+      return methods.reduce((collection: any, item: any) => {
+        collection.push(...item)
+        return collection
+      });
+    })
+
+  }
+
+  private async consume({channel, queue, method}: { channel: ConfirmChannel, queue: string, method: Function }) {
+    await channel.consume(queue, async message => {
+      try {
+        if (!message) {
+          throw new Error('Receive null message')
+        }
+
+        const content = message.content;
+        if (content) {
+          let data;
+          try {
+            data = JSON.parse(content.toString());
+          } catch (e) {
+            data = null;
+          }
+          await method({data, message, channel})
+          channel.ack(message)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    })
   }
 
   async sync({model, action, data}: { model: string, action: string, data: any }){
@@ -91,5 +166,13 @@ export class RabbitmqServer extends Context implements Server {
 
   get listening(): boolean {
     return this._listening
+  }
+
+  get conn(): AmqpConnectionManager {
+    return this._conn
+  }
+
+  get channelManager(): ChannelWrapper {
+    return this._channelWrapper
   }
 }
