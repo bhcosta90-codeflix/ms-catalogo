@@ -63,6 +63,11 @@ export class PingController {
       id: Math.floor(Date.now() / 1000).toString(),
       name: 'bruno costa',
       description: 'oi',
+      active: true,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      created_at: new Date().toISOString(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      updated_at: new Date().toISOString(),
     });
     return {
       status: true,

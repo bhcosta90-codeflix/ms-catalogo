@@ -18,10 +18,34 @@ export class Category extends Entity {
 
   @property({
     type: 'string',
+    default: ''
   })
   description?: string;
 
-  // Define well-known properties here
+  @property({
+    type: 'string',
+    required: false,
+    default: true,
+  })
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  is_active: string;
+
+  //{"id": "123131", "name": "categoria de teste"}
+  @property({
+    type: 'date',
+    required: true
+  })
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  created_at?: string;
+
+  @property({
+    type: 'date',
+    required: true
+  })
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  updated_at?: string;
+
+// Define well-known properties here
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
