@@ -54,11 +54,13 @@
     "@loopback/service-proxy": "^2.3.5",
     "@types/amqp-connection-manager": "^2.0.10",
     "@types/amqplib": "^0.5.17",
+    "@types/lodash": "^4.14.166",
     "@types/npm": "^2.0.31",
     "amqp-connection-manager": "^3.2.1",
     "amqplib": "^0.6.0",
     "dotenv": "^8.2.0",
     "install": "^0.13.0",
+    "lodash": "^4.17.20",
     "loopback-connector-esv6": "https://github.com/codeedu/loopback-connector-elastic-search",
     "tslib": "^2.0.0"
   },

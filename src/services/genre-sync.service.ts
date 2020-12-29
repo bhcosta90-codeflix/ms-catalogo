@@ -1,34 +1,27 @@
 import {bind, /* inject, */ BindingScope} from '@loopback/core';
 import {RabbitmqSubscribe} from "../decorators";
 import {repository} from "@loopback/repository";
-import {GenreRepository} from "../repositories/genre.repository";
+import {GenreRepository} from "../repositories";
+import {BaseSyncService} from "./base-sync.service";
 
-@bind({scope: BindingScope.TRANSIENT})
-export class GenreSyncService {
+@bind({scope: BindingScope.SINGLETON})
+export class GenreSyncService extends BaseSyncService {
   constructor(
-      @repository(GenreRepository) private genreRepo: GenreRepository
-  ) {}
+      @repository(GenreRepository) private repo: GenreRepository
+  ) {
+      super()
+  }
 
   @RabbitmqSubscribe({
       exchange: 'amq.topic',
-      queue: 'ms-catalogo/sync-videos',
+      queue: 'ms-catalogo/sync-videos/genre',
       routingKey: 'model.genre.*'
   })
   async handler({data, action}: {data: any, action: any}) {
-      switch(action){
-          case 'created':
-              await this.genreRepo.create({
-                  ...data,
-                  created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString(),
-              })
-              break;
-          case 'updated':
-              await this.genreRepo.updateById(data.id, data)
-              break;
-          case 'deleted':
-              await this.genreRepo.deleteById(data.id)
-              break;
-      }
+      await this.sync({
+          repo: this.repo,
+          data,
+          action
+      })
   }
 }

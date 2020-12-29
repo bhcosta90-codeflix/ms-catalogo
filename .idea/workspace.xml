@@ -2,15 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3c7f7d96-3749-4125-a3dd-92b16d87d2c0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/ping.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/ping.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/castMembers.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/cast-members.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/category.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/category.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/genre.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/genre.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/category.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/category.repository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/castMember.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/cast-member.repository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/servers/rabbitmq.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/servers/rabbitmq.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/cast-member-sync.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/cast-member-sync.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/category-sync.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/category-sync.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/genre-sync.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/genre-sync.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +68,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1609239977047</updated>
-      <workItem from="1609239978545" duration="27809000" />
+      <workItem from="1609239978545" duration="32830000" />
     </task>
     <servers />
   </component>
