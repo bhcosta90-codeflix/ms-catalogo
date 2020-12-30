@@ -8,7 +8,6 @@ import path from 'path';
 import {MySequence} from './sequence';
 import {RabbitmqServer} from "./servers";
 import {RestExplorerComponent} from "./components";
-import {CrudRestComponent} from '@loopback/rest-crud';
 
 export {ApplicationConfig};
 
@@ -43,6 +42,5 @@ export class MsCatalogApplication extends BootMixin(
     };
 
     this.servers([RabbitmqServer]);
-    this.component(CrudRestComponent);
   }
 }
