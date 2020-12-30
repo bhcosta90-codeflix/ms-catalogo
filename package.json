@@ -30,7 +30,8 @@
     "migrate": "node ./dist/migrate",
     "prestart": "npm run build",
     "start": "node -r source-map-support/register .",
-    "clean": "lb-clean dist *.tsbuildinfo .eslintcache"
+    "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
+    "console": "node dist/console.js"
   },
   "repository": {
     "type": "git"
@@ -44,34 +45,45 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^2.4.0",
-    "@loopback/context": "^3.9.3",
-    "@loopback/core": "^2.9.2",
-    "@loopback/openapi-v3": "^3.4.6",
-    "@loopback/repository": "^2.10.0",
-    "@loopback/rest": "^5.2.1",
-    "@loopback/rest-explorer": "^2.2.7",
-    "@loopback/service-proxy": "^2.3.5",
+    "@loopback/boot": "^2.0.3",
+    "@loopback/context": "^3.3.0",
+    "@loopback/core": "^2.2.1",
+    "@loopback/openapi-v3": "^3.1.2",
+    "@loopback/repository": "^2.1.0",
+    "@loopback/rest": "^3.2.0",
+    "@loopback/rest-explorer": "^2.0.3",
+    "@loopback/service-proxy": "^2.0.3",
     "@types/amqp-connection-manager": "^2.0.10",
     "@types/amqplib": "^0.5.17",
     "@types/lodash": "^4.14.166",
     "@types/npm": "^2.0.31",
     "amqp-connection-manager": "^3.2.1",
     "amqplib": "^0.6.0",
+    "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
     "install": "^0.13.0",
     "lodash": "^4.17.20",
-    "loopback-connector-esv6": "https://github.com/codeedu/loopback-connector-elastic-search",
-    "tslib": "^2.0.0"
+    "loopback-connector-esv6": "git+https://github.com/codeedu/loopback-connector-elastic-search.git",
+    "tslib": "^2.0.3"
   },
   "devDependencies": {
-    "@loopback/build": "^6.1.1",
-    "source-map-support": "^0.5.19",
-    "@loopback/testlab": "^3.2.1",
-    "@types/node": "^10.17.27",
-    "@loopback/eslint-config": "^8.0.4",
-    "eslint": "^7.5.0",
-    "typescript": "~3.9.7"
+    "@loopback/build": "^5.0.1",
+    "@loopback/eslint-config": "^6.0.3",
+    "@loopback/testlab": "^3.0.0",
+    "@types/amqp-connection-manager": "^2.0.10",
+    "@types/amqplib": "^0.5.13",
+    "@types/lodash": "^4.14.152",
+    "@types/node": "^10.17.19",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-eslint-plugin": "^2.2.1",
+    "eslint-plugin-mocha": "^6.3.0",
+    "source-map-support": "^0.5.16",
+    "ts-node": "^8.8.2",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "~3.8.3"
   },
   "nodemonConfig": {
     "verbose": true,
