@@ -18,7 +18,7 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import {CastMembers} from '../models';
+import {CastMember as CastMembers} from '../models';
 import {CastMemberRepository} from '../repositories';
 
 export class CastMemberController {
