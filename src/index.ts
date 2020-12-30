@@ -1,7 +1,7 @@
 import './bootstrap';
 import {ApplicationConfig, MsCatalogApplication} from './application';
 import {RestServer} from "@loopback/rest";
-import {ResponseEnum} from "./servers";
+import * as config from './config'
 
 export * from './application';
 
@@ -17,8 +17,6 @@ export async function main(options: ApplicationConfig = {}) {
 
   return app;
 }
-
-const config = require('./config');
 
 if (require.main === module) {
   // Run the application

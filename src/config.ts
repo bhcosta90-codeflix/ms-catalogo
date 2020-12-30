@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     rest: {
         port: +(process.env.PORT ?? 3000),
         host: process.env.HOST,
@@ -15,7 +15,7 @@ module.exports = {
     },
     rabbitmq: {
         uri: process.env.RABBITMQ_URI,
-        defaultHandler: parseInt(process.env.RABBITMQ_HANDLER_ERROR)
+        defaultHandler: parseInt(<string>process.env.RABBITMQ_HANDLER_ERROR)
         // exchanges: [
         //   {name: 'teste1', type: "direct"},
         //   {name: 'teste2', type: "direct"}
