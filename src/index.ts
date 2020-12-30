@@ -1,7 +1,7 @@
 import './bootstrap';
 import {ApplicationConfig, MsCatalogApplication} from './application';
 import {RestServer} from "@loopback/rest";
-import * as config from './config'
+import {default as config}  from './config'
 
 export * from './application';
 

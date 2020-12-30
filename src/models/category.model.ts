@@ -27,12 +27,12 @@ export class Category extends Entity {
   description?: string;
 
   @property({
-    type: 'string',
+    type: 'boolean',
     required: false,
     default: true,
   })
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  is_active: string;
+  is_active: boolean;
 
   //{"id": "123131", "name": "categoria de teste"}
   @property({
