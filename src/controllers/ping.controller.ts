@@ -56,36 +56,4 @@ export class PingController {
       headers: Object.assign({}, this.req.headers),
     };
   }
-  @get('/categories')
-  getCategories() {
-    return this.categoryRepository.find();
-  }
-
-  @get('/genres')
-  getGenres() {
-    return this.genreRepository.find();
-  }
-
-  @get('/castmembers')
-  getCastMembers() {
-    return this.castMemberRepository.find();
-  }
-
-  @post('/categories')
-  async store() {
-    await this.categoryRepository.create({
-      id: Math.floor(Date.now() / 1000).toString(),
-      name: 'bruno costa',
-      description: 'oi',
-      active: true,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      created_at: new Date().toISOString(),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      updated_at: new Date().toISOString(),
-    });
-    return {
-      status: true,
-      msg: 'Categoria cadastrada com sucesso',
-    };
-  }
 }
