@@ -1,6 +1,7 @@
 import './bootstrap';
 import {ApplicationConfig, MsCatalogApplication} from './application';
 import {RestServer} from "@loopback/rest";
+import {ResponseEnum} from "./servers";
 
 export * from './application';
 
@@ -35,7 +36,8 @@ if (require.main === module) {
       },
     },
     rabbitmq: {
-      uri: process.env.RABBIT_URI,
+      uri: process.env.RABBITMQ_URI,
+      defaultHandler: parseInt(<string>process.env.RABBITMQ_HANDLER_ERROR)
       // exchanges: [
       //   {name: 'teste1', type: "direct"},
       //   {name: 'teste2', type: "direct"}

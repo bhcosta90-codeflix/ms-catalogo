@@ -1,5 +1,5 @@
 import {Application, Binding, Context, CoreBindings, Server} from '@loopback/core';
-import {Channel, ConfirmChannel, Options, Replies} from 'amqplib';
+import {Channel, ConfirmChannel, Message, Options, Replies} from 'amqplib';
 import AssertQueue = Replies.AssertQueue;
 import AssertExchange = Replies.AssertExchange;
 import {CastMemberRepository} from "../repositories";
@@ -10,10 +10,17 @@ import {AmqpConnectionManager, AmqpConnectionManagerOptions, ChannelWrapper, con
 import {MetadataInspector} from "@loopback/metadata"
 import {RabbitmqSubscribeMetada, RABBITMQ_SUBSCRIBE_DECORATOR} from "../decorators";
 
+export enum ResponseEnum {
+  ACK,
+  REQUEUE,
+  NACK,
+}
+
 export interface RabbitmqConfig {
   uri: string,
   connOptions?: AmqpConnectionManagerOptions
-  exchanges?: { name: string, type: string, options?: Options.AssertExchange }[]
+  exchanges?: { name: string, type: string, options?: Options.AssertExchange }[],
+  defaultHandler?: ResponseEnum
 }
 
 export class RabbitmqServer extends Context implements Server {
@@ -124,11 +131,15 @@ export class RabbitmqServer extends Context implements Server {
           }
 
           const [action] = message.fields.routingKey.split('.').slice(2);
-          await method({data, message, channel, action})
-          channel.ack(message)
+          const responseType = await method({data, message, channel, action})
+          this.dispatchResponse(channel, message, responseType)
         }
       } catch (e) {
         console.log(e)
+        if(!message){
+          return;
+        }
+        this.dispatchResponse(channel, message, this.config?.defaultHandler)
       }
     })
   }
@@ -157,6 +168,21 @@ export class RabbitmqServer extends Context implements Server {
             break;
         }
         break;
+    }
+  }
+
+  private dispatchResponse(channel: Channel, message: Message, responseType?: ResponseEnum)
+  {
+    switch(responseType){
+      case ResponseEnum.REQUEUE:
+        channel.nack(message, false, true);
+        break;
+      case ResponseEnum.NACK:
+        channel.nack(message, false, false);
+        break;
+      case ResponseEnum.ACK:
+      default:
+        channel.ack(message)
     }
   }
 
