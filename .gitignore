@@ -64,4 +64,5 @@ typings/
 *.tsbuildinfo
 
 .data
+.idea
 .npm-cache
