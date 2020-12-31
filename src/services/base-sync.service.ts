@@ -1,6 +1,6 @@
 import {CrudRepository, DefaultCrudRepository} from "@loopback/repository";
 import {pick} from "lodash"
-import {exists} from "fs";
+import {ValidatorService} from "./validator.service";
 
 export interface SyncOptions {
     repo: DefaultCrudRepository<any, any>;
@@ -9,12 +9,20 @@ export interface SyncOptions {
 }
 
 export abstract class BaseSyncService {
+    protected constructor(
+        public validateService: ValidatorService
+    ) {
+    }
     protected async sync({repo, data, action}: SyncOptions) {
         const {id} = data || {};
         const entity = this.createEntity(data, repo);
 
         switch (action) {
             case 'created':
+                await this.validateService.validate({
+                    data: entity,
+                    entityClass: repo.entityClass,
+                })
                 await repo.create({
                     ...entity,
                     created_at: new Date().toISOString(),
@@ -37,6 +45,12 @@ export abstract class BaseSyncService {
     protected async updateOrCreate(repo: DefaultCrudRepository<any, any>, id: string, entity: any){
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const exist = await repo.exists(id)
+
+        await this.validateService.validate({
+            data: entity,
+            entityClass: repo.entityClass,
+            ...(exist && {options: {partial: true}})
+        })
 
         // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-unused-expressions
         exist? await repo.updateById(id, entity) : await repo.create({

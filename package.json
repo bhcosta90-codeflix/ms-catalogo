@@ -12,6 +12,7 @@
     "node": ">=10"
   },
   "scripts": {
+    "console": "node dist/console.js",
     "build": "lb-tsc",
     "build:watch": "lb-tsc --watch",
     "lint": "npm run prettier:check && npm run eslint",

@@ -15,14 +15,17 @@ export class Category extends Entity {
     required: true,
     jsonSchema: {
       minLength: 1,
-      maxLength: 255
+      maxLength: 255,
     },
   })
   name: string;
 
   @property({
     type: 'string',
-    default: ''
+    default: '',
+    jsonSchema: {
+      nullable: true
+    }
   })
   description?: string;
 
@@ -31,22 +34,18 @@ export class Category extends Entity {
     required: false,
     default: true,
   })
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   is_active: boolean;
 
-  //{"id": "123131", "name": "categoria de teste"}
   @property({
     type: 'date',
     required: true
   })
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   created_at?: string;
 
   @property({
     type: 'date',
     required: true
   })
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   updated_at?: string;
 
 // Define well-known properties here

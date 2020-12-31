@@ -7,7 +7,7 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
 import {RabbitmqServer} from "./servers";
-import {RestExplorerComponent} from "./components";
+import {RestExplorerComponent, ValidatorsComponent} from "./components";
 
 export {ApplicationConfig};
 
@@ -29,6 +29,7 @@ export class MsCatalogApplication extends BootMixin(
       path: '/explorer',
     });
     this.component(RestExplorerComponent);
+    this.component(ValidatorsComponent);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
