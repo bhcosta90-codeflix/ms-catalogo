@@ -20,7 +20,7 @@ export class GenreSyncService extends BaseSyncService {
         queue: 'ms-catalogo/sync-videos/genre',
         routingKey: 'model.genre.*'
     })
-    async handler2({data, action}: { data: any, action: any }) {
+    async handler({data, action}: { data: any, action: any }) {
         await this.sync({
             repo: this.repo,
             data,
