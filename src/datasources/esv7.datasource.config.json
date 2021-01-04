@@ -5,10 +5,10 @@
   "version": 7,
   "mappingProperties": {
     "docType": {
-      "type": "keyword",
+      "type": "keyword"
     },
     "id": {
-      "type": "keyword",
+      "type": "keyword"
     },
     "name": {
       "type": "text",
@@ -20,10 +20,10 @@
       }
     },
     "description": {
-      "type": "text",
+      "type": "text"
     },
     "type": {
-      "type": "byte",
+      "type": "byte"
     },
     "is_active": {
       "type": "boolean"
@@ -35,6 +35,22 @@
       "type": "date"
     },
     "categories": {
+      "type": "nested",
+      "properties": {
+        "id": {"type": "keyword"},
+        "name": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "is_active": {"type": "boolean"}
+      }
+    },
+    "genres": {
       "type": "nested",
       "properties": {
         "id": {"type": "keyword"},

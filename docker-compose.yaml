@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  ms_catalogo_videos_frontend:
+  ms_catalogo_frontend:
     build: .
     entrypoint: ./.docker/entrypoint.sh
     ports:

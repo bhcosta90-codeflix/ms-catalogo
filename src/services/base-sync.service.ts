@@ -8,6 +8,13 @@ export interface SyncOptions {
     action: string
 }
 
+export interface RelationsOptions {
+    repoRelation: DefaultCrudRepository<any, any>;
+    id: string,
+    relationsIds: Array<string>,
+    action: string
+}
+
 export abstract class BaseSyncService {
     protected constructor(
         public validateService: ValidatorService
@@ -38,11 +45,20 @@ export abstract class BaseSyncService {
         }
     }
 
+    protected async syncRelation({repoRelation, id, relationsIds, action}: RelationsOptions) {
+        const collections = await repoRelation.find({
+            where: {
+                or: relationsIds.map(idRelation => ({id: idRelation}))
+            }
+        })
+        console.log(collections)
+    }
+
     protected createEntity(data: any, repo: DefaultCrudRepository<any, any>) {
         return pick(data, Object.keys(repo.entityClass.definition.properties));
     }
 
-    protected async updateOrCreate(repo: DefaultCrudRepository<any, any>, id: string, entity: any){
+    protected async updateOrCreate(repo: DefaultCrudRepository<any, any>, id: string, entity: any) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const exist = await repo.exists(id)
 

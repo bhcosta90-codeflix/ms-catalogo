@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {SmallCategory} from "./category.model";
 
 @model({settings: {strict: false}})
 export class Genre extends Entity {
@@ -42,6 +43,29 @@ export class Genre extends Entity {
   })
   // eslint-disable-next-line @typescript-eslint/naming-convention
   updated_at?: string;
+
+  @property({
+    type: "object",
+    jsonSchema: {
+      type: 'array',
+      items: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+          },
+          name: {
+            type: "string",
+          },
+          is_active: {
+            type: "boolean",
+          },
+        }
+      },
+      uniqueItems: true,
+    }
+  })
+  categories: SmallCategory
 
 // Define well-known properties here
 
