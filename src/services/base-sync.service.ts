@@ -62,7 +62,11 @@ export abstract class BaseSyncService {
             throw error;
         }
 
-        await (repo as any).attachCategories(id, collections)
+        switch(action){
+            case 'attach':
+                await (repo as any).attachCategories(id, collections)
+                break;
+        }
     }
 
     protected extractFieldsRelation({repo, relation}: {repo: DefaultCrudRepository<any, any>, relation: string})

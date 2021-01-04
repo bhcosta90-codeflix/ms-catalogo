@@ -45,4 +45,37 @@ export class GenreRepository extends DefaultCrudRepository<Genre,
     const db : Client = this.dataSource.connector?.db
     await db.update_by_query(document)
   }
+
+  async detachCategories(id: typeof Genre.prototype.id, data: object[]) {
+    const document = {
+      index: this.dataSource.settings.index,
+      refresh: true,
+      body: {
+        query: {
+          term: {
+            _id: id
+          }
+        },
+        script: {
+          source: `
+          if(!ctx._source.containsKey('categories')){
+            ctx._source['categories'] = [];
+          }
+          
+          for(item in params['categories']){
+            if(ctx._source['categories'].find(i -> i.id == item.id)){
+              ctx._source['categories'].add(item)
+            }
+          }
+        `,
+          params: {
+            categories: data
+          }
+        }
+      }
+    }
+
+    const db : Client = this.dataSource.connector?.db
+    await db.update_by_query(document)
+  }
 }
