@@ -25,6 +25,5 @@ export class CategorySyncService extends BaseSyncService{
             data,
             action
         })
-
     }
 }

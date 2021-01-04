@@ -1,4 +1,4 @@
-import {CrudRepository, DefaultCrudRepository} from "@loopback/repository";
+import {CrudRepository, DefaultCrudRepository, EntityNotFoundError} from "@loopback/repository";
 import {pick} from "lodash"
 import {ValidatorService} from "./validator.service";
 
@@ -10,6 +10,8 @@ export interface SyncOptions {
 
 export interface RelationsOptions {
     repoRelation: DefaultCrudRepository<any, any>;
+    repo: DefaultCrudRepository<any, any>;
+    relation: string
     id: string,
     relationsIds: Array<string>,
     action: string
@@ -45,13 +47,33 @@ export abstract class BaseSyncService {
         }
     }
 
-    protected async syncRelation({repoRelation, id, relationsIds, action}: RelationsOptions) {
+    protected async syncRelation({repoRelation, id, relationsIds, action, repo, relation}: RelationsOptions) {
+        const fieldsRelations = this.extractFieldsRelation({repo, relation})
+
         const collections = await repoRelation.find({
             where: {
                 or: relationsIds.map(idRelation => ({id: idRelation}))
             }
-        })
-        console.log(collections)
+        }, fieldsRelations)
+
+        if(collections.length){
+            const error = new EntityNotFoundError(repoRelation.entityClass, relationsIds);
+            error.name = 'ENTITY_NOT_FOUND';
+            throw error;
+        }
+
+        // await repo.updateById(id, {[relation]: collections})
+        await (repo as any).attachCategories(id, collections)
+    }
+
+    protected extractFieldsRelation({repo, relation}: {repo: DefaultCrudRepository<any, any>, relation: string})
+    {
+        return Object.keys(
+            repo.modelClass.definition.properties[relation].jsonSchemas.items.properties
+        ).reduce((obj: any, field: string) => {
+            obj[field] = true;
+            return obj;
+        }, {})
     }
 
     protected createEntity(data: any, repo: DefaultCrudRepository<any, any>) {
