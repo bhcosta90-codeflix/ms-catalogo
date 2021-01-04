@@ -56,20 +56,19 @@ export abstract class BaseSyncService {
             }
         }, fieldsRelations)
 
-        if(collections.length){
+        if(collections.length == 0){
             const error = new EntityNotFoundError(repoRelation.entityClass, relationsIds);
             error.name = 'ENTITY_NOT_FOUND';
             throw error;
         }
 
-        // await repo.updateById(id, {[relation]: collections})
         await (repo as any).attachCategories(id, collections)
     }
 
     protected extractFieldsRelation({repo, relation}: {repo: DefaultCrudRepository<any, any>, relation: string})
     {
         return Object.keys(
-            repo.modelClass.definition.properties[relation].jsonSchemas.items.properties
+            repo.modelClass.definition.properties[relation].jsonSchema.items.properties
         ).reduce((obj: any, field: string) => {
             obj[field] = true;
             return obj;

@@ -6,7 +6,7 @@ import {BaseSyncService} from "./base-sync.service";
 import {ValidatorService} from "./validator.service";
 
 @bind({scope: BindingScope.SINGLETON})
-export class GenreSyncService extends BaseSyncService {
+export class GenreCategoriesSyncService extends BaseSyncService {
     constructor(
         @repository(GenreRepository) private repo: GenreRepository,
         @service(ValidatorService) private validator: ValidatorService,
@@ -17,14 +17,17 @@ export class GenreSyncService extends BaseSyncService {
 
     @RabbitmqSubscribe({
         exchange: 'amq.topic',
-        queue: 'ms-catalogo/sync-videos/genre',
-        routingKey: 'model.genre.*'
+        queue: 'ms-catalogo/sync-videos/genre_categories',
+        routingKey: 'model.genre_categories.*'
     })
-    async handler({data, action}: { data: any, action: any }) {
-        await this.sync({
+    async handlerCategories({data, action}: { data: any, action: any }) {
+        await this.syncRelation({
+            repoRelation: this.repoCategory,
             repo: this.repo,
-            data,
-            action
+            id: data.id,
+            relationsIds: data.relations_id,
+            action,
+            relation: 'categories'
         })
     }
 }

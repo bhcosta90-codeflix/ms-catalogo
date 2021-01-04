@@ -30,7 +30,7 @@ export class GenreRepository extends DefaultCrudRepository<Genre,
           }
           
           for(item in params['categories']){
-            if(ctx._source['categories'].find(i => i.id == item.id) == null){
+            if(ctx._source['categories'].find(i -> i.id == item.id) == null){
               ctx._source['categories'].add(item)
             }
           }
