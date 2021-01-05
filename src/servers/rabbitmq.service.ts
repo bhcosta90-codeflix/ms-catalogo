@@ -62,12 +62,11 @@ export class RabbitmqServer extends Context implements Server {
         return;
 
       await Promise.all(this.config.queues.map(async (queue) => {
-        console.log(queue.options)
         await channel.assertQueue(queue.name, queue.options);
-        // if (!queue.exchange) {
-        //   return;
-        // }
-        // await channel.bindQueue(queue.name, queue.exchange.name, queue.exchange.routing);
+        if (!queue.exchange) {
+          return;
+        }
+        await channel.bindQueue(queue.name, queue.exchange.name, queue.exchange.routing);
       }))
     })
   }
