@@ -1,81 +1,16 @@
-import {DefaultCrudRepository} from '@loopback/repository';
 import {Genre, GenreRelations} from '../models';
 import {Esv7DataSource} from '../datasources';
 import {inject} from '@loopback/core';
 import {Client} from 'es6';
+import {pick} from 'lodash'
+import {BaseRepository} from "./base.repository";
 
-export class GenreRepository extends DefaultCrudRepository<Genre,
+export class GenreRepository extends BaseRepository<Genre,
     typeof Genre.prototype.id,
     GenreRelations> {
   constructor(
       @inject('datasources.esv7') dataSource: Esv7DataSource,
   ) {
     super(Genre, dataSource);
-  }
-
-  async attachCategories(id: typeof Genre.prototype.id, data: object[]) {
-    const document = {
-      index: this.dataSource.settings.index,
-      refresh: true,
-      body: {
-        query: {
-          term: {
-            _id: id
-          }
-        },
-        script: {
-          source: `
-          if(!ctx._source.containsKey('categories')){
-            ctx._source['categories'] = [];
-          }
-          
-          for(item in params['categories']){
-            if(ctx._source['categories'].find(i -> i.id == item.id) == null){
-              ctx._source['categories'].add(item)
-            }
-          }
-        `,
-          params: {
-            categories: data
-          }
-        }
-      }
-    }
-
-    const db : Client = this.dataSource.connector?.db
-    await db.update_by_query(document)
-  }
-
-  async detachCategories(id: typeof Genre.prototype.id, data: object[]) {
-    const document = {
-      index: this.dataSource.settings.index,
-      refresh: true,
-      body: {
-        query: {
-          term: {
-            _id: id
-          }
-        },
-        script: {
-          source: `
-          if(!ctx._source.containsKey('categories')){
-            ctx._source['categories'] = [];
-          }
-          
-          for(item in params['categories']){
-            if(ctx._source['categories'].find(i -> i.id == item.id)){
-              ctx._source['categories'].add(item)
-            }
-          }
-        `,
-          params: {
-            categories: data
-          }
-        }
-      }
-    }
-
-    const db : Client = this.dataSource.connector?.db
-    await db.update_by_query(document)
   }
 }

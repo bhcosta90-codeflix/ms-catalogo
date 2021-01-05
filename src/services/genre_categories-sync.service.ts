@@ -22,12 +22,12 @@ export class GenreCategoriesSyncService extends BaseSyncService {
     })
     async handlerCategories({data, action}: { data: any, action: any }) {
         await this.syncRelation({
-            repoRelation: this.repoCategory,
-            repo: this.repo,
             id: data.id,
-            relationsIds: data.relations_id,
             action,
-            relation: 'categories'
+            repo: this.repo,
+            relationName: 'categories',
+            relationsIds: data.relations_id,
+            relationRepo: this.repoCategory,
         })
     }
 }

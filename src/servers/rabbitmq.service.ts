@@ -1,14 +1,12 @@
 import {Application, Binding, Context, CoreBindings, Server} from '@loopback/core';
 import {Channel, ConfirmChannel, Message, Options, Replies} from 'amqplib';
-import AssertQueue = Replies.AssertQueue;
-import AssertExchange = Replies.AssertExchange;
 import {CastMemberRepository} from "../repositories";
 import {repository} from "@loopback/repository";
 import {inject} from "@loopback/context";
 import {RabbitmqBindings} from "../keys";
 import {AmqpConnectionManager, AmqpConnectionManagerOptions, ChannelWrapper, connect} from "amqp-connection-manager";
 import {MetadataInspector} from "@loopback/metadata"
-import {RabbitmqSubscribeMetada, RABBITMQ_SUBSCRIBE_DECORATOR} from "../decorators";
+import {RABBITMQ_SUBSCRIBE_DECORATOR, RabbitmqSubscribeMetada} from "../decorators";
 
 export enum ResponseEnum {
   ACK,
@@ -85,7 +83,7 @@ export class RabbitmqServer extends Context implements Server {
 
   private getSubscribers(): { method: Function, metadata: RabbitmqSubscribeMetada }[] {
     const bindings: Array<Readonly<Binding>> = this.find('services.*');
-    const ret = bindings.map(binding => {
+    return bindings.map(binding => {
       const metadata = MetadataInspector.getAllMethodMetadata<RabbitmqSubscribeMetada>(
           RABBITMQ_SUBSCRIBE_DECORATOR, binding.valueConstructor?.prototype)
       if (!metadata) {
@@ -110,10 +108,7 @@ export class RabbitmqServer extends Context implements Server {
         collection.push(...item)
         return collection
       });
-    })
-    console.log(ret)
-
-    return ret;
+    });
 
   }
 
