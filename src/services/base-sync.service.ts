@@ -48,6 +48,13 @@ export abstract class BaseSyncService {
     }
 
     protected async syncRelation({relationRepo, id, relationsIds, action, repo, relationName}: RelationsOptions) {
+        const obj = await repo.findById(id);
+        if (!obj) {
+            const error = new EntityNotFoundError(repo.entityClass, id);
+            error.name = 'ENTITY_NOT_FOUND';
+            throw error;
+        }
+
         const fieldsRelations = this.extractFieldsRelation({repo, relationName})
 
         const collections = await relationRepo.find({
@@ -56,19 +63,21 @@ export abstract class BaseSyncService {
             }
         }, fieldsRelations)
 
-        if(!collections.length){
+        if (!collections.length) {
             const error = new EntityNotFoundError(relationRepo.entityClass, relationsIds);
             error.name = 'ENTITY_NOT_FOUND';
             throw error;
         }
 
-        switch(action){
-            case 'attach':
+        switch (action) {
+            case 'attached':
                 await (repo as any).relationAttach(id, relationName, collections)
                 break;
             case 'detach':
                 await (repo as any).relationDetach(id, relationName, collections)
                 break;
+            default:
+                console.log(action)
         }
     }
 

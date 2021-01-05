@@ -15,10 +15,25 @@ export default {
     },
     rabbitmq: {
         uri: process.env.RABBITMQ_URI,
-        defaultHandler: parseInt(<string>process.env.RABBITMQ_HANDLER_ERROR)
-        // exchanges: [
-        //   {name: 'teste1', type: "direct"},
-        //   {name: 'teste2', type: "direct"}
-        // ]
+        defaultHandler: parseInt(<string>process.env.RABBITMQ_HANDLER_ERROR),
+        exchanges: [
+            {
+                name: 'dlx.amq.topic',
+                type: "topic"
+            }
+        ],
+        queues: [
+            {
+                name: 'dlx.sync-videos',
+                exchange: {
+                    name: 'dlx.amq.topic',
+                    routing: 'model.*.*'
+                },
+                options: {
+                    deadLetterExchange: 'amq.topic',
+                    messageTtl: 20000
+                }
+            }
+        ],
     }
 }

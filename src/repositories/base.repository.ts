@@ -8,9 +8,6 @@ export class BaseRepository<T extends Entity,
     Relations extends object = {}> extends DefaultCrudRepository<T, ID, Relations>{
 
     async relationAttach(id: ID, relationName: string, data: object[]) {
-        const newData = data.map(item => {
-            return this.createEntity(relationName, data)
-        })
         const document = {
             index: this.dataSource.settings.index,
             refresh: true,
@@ -33,7 +30,7 @@ export class BaseRepository<T extends Entity,
                       }
                     `,
                     params: {
-                        [relationName]: newData
+                        [relationName]: data
                     }
                 }
             }
@@ -75,7 +72,9 @@ export class BaseRepository<T extends Entity,
     }
 
     async relationUpdated(relationName: string, data: {id: any, [key: string]: string}) {
-        const relation = this.createEntity(relationName, data)
+        const relation = pick(data, Object.keys(
+            this.modelClass.definition.properties[relationName].jsonSchema.items.properties
+        ));
         const id = data.id;
 
         const document = {
@@ -122,11 +121,5 @@ export class BaseRepository<T extends Entity,
 
         const db : Client = this.dataSource.connector?.db
         await db.update_by_query(document)
-    }
-
-    protected createEntity(relationName: string, data: any) {
-        return pick(data, Object.keys(
-            this.modelClass.definition.properties[relationName].jsonSchema.items.properties
-        ));
     }
 }

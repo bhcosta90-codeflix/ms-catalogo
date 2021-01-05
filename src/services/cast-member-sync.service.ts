@@ -17,7 +17,10 @@ export class CastMemberSyncService extends BaseSyncService {
   @RabbitmqSubscribe({
       exchange: 'amq.topic',
       queue: 'ms-catalogo/sync-videos/cast-member',
-      routingKey: 'model.cast_member.*'
+      routingKey: 'model.cast_member.*',
+      queueOptions: {
+          deadLetterExchange: 'dlx.amq.topic'
+      }
   })
   async handler({data, action}: {data: any, action: any}) {
       await this.sync({
