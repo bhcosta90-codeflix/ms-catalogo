@@ -30,4 +30,23 @@ export class GenreSyncService extends BaseSyncService {
             action
         })
     }
+
+    @RabbitmqSubscribe({
+        exchange: 'amq.topic',
+        queue: 'ms-catalogo/sync-videos/genre_categories',
+        routingKey: 'model.genre_categories.*',
+        queueOptions: {
+            deadLetterExchange: 'dlx.amq.topic'
+        }
+    })
+    async handlerCategories({data, action}: { data: any, action: any }) {
+        await this.syncRelation({
+            id: data.id,
+            action,
+            repo: this.repo,
+            relationName: 'categories',
+            relationsIds: data.relations_id,
+            relationRepo: this.repoCategory,
+        })
+    }
 }
