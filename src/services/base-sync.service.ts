@@ -9,12 +9,12 @@ export interface SyncOptions {
 }
 
 export interface RelationsOptions {
-    repoRelation: DefaultCrudRepository<any, any>;
-    repo: DefaultCrudRepository<any, any>;
-    relation: string
     id: string,
-    relationsIds: Array<string>,
     action: string
+    repo: DefaultCrudRepository<any, any>;
+    relationName: string;
+    relationsIds: Array<string>,
+    relationRepo: DefaultCrudRepository<any, any>;
 }
 
 export abstract class BaseSyncService {
@@ -47,29 +47,44 @@ export abstract class BaseSyncService {
         }
     }
 
-    protected async syncRelation({repoRelation, id, relationsIds, action, repo, relation}: RelationsOptions) {
-        const fieldsRelations = this.extractFieldsRelation({repo, relation})
+    protected async syncRelation({relationRepo, id, relationsIds, action, repo, relationName}: RelationsOptions) {
+        const obj = await repo.findById(id);
+        if (!obj) {
+            const error = new EntityNotFoundError(repo.entityClass, id);
+            error.name = 'ENTITY_NOT_FOUND';
+            throw error;
+        }
 
-        const collections = await repoRelation.find({
+        const fieldsRelations = this.extractFieldsRelation({repo, relationName})
+
+        const collections = await relationRepo.find({
             where: {
                 or: relationsIds.map(idRelation => ({id: idRelation}))
             }
         }, fieldsRelations)
 
-        if(collections.length){
-            const error = new EntityNotFoundError(repoRelation.entityClass, relationsIds);
+        if (!collections.length) {
+            const error = new EntityNotFoundError(relationRepo.entityClass, relationsIds);
             error.name = 'ENTITY_NOT_FOUND';
             throw error;
         }
 
-        // await repo.updateById(id, {[relation]: collections})
-        await (repo as any).attachCategories(id, collections)
+        switch (action) {
+            case 'attached':
+                await (repo as any).relationAttach(id, relationName, collections)
+                break;
+            case 'detach':
+                await (repo as any).relationDetach(id, relationName, collections)
+                break;
+            default:
+                console.log(action)
+        }
     }
 
-    protected extractFieldsRelation({repo, relation}: {repo: DefaultCrudRepository<any, any>, relation: string})
+    protected extractFieldsRelation({repo, relationName}: {repo: DefaultCrudRepository<any, any>, relationName: string})
     {
         return Object.keys(
-            repo.modelClass.definition.properties[relation].jsonSchemas.items.properties
+            repo.modelClass.definition.properties[relationName].jsonSchema.items.properties
         ).reduce((obj: any, field: string) => {
             obj[field] = true;
             return obj;

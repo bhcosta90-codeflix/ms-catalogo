@@ -18,7 +18,10 @@ export class GenreSyncService extends BaseSyncService {
     @RabbitmqSubscribe({
         exchange: 'amq.topic',
         queue: 'ms-catalogo/sync-videos/genre',
-        routingKey: 'model.genre.*'
+        routingKey: 'model.genre.*',
+        queueOptions: {
+            deadLetterExchange: 'dlx.amq.topic'
+        }
     })
     async handler({data, action}: { data: any, action: any }) {
         await this.sync({
@@ -31,16 +34,19 @@ export class GenreSyncService extends BaseSyncService {
     @RabbitmqSubscribe({
         exchange: 'amq.topic',
         queue: 'ms-catalogo/sync-videos/genre_categories',
-        routingKey: 'model.genre_categories.*'
+        routingKey: 'model.genre_categories.*',
+        queueOptions: {
+            deadLetterExchange: 'dlx.amq.topic'
+        }
     })
     async handlerCategories({data, action}: { data: any, action: any }) {
         await this.syncRelation({
-            repoRelation: this.repoCategory,
-            repo: this.repo,
             id: data.id,
-            relationsIds: data.relations_id,
             action,
-            relation: 'categories'
+            repo: this.repo,
+            relationName: 'categories',
+            relationsIds: data.relations_id,
+            relationRepo: this.repoCategory,
         })
     }
 }

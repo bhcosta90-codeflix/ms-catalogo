@@ -4,6 +4,7 @@ import {repository} from "@loopback/repository";
 import {CastMemberRepository, CategoryRepository} from "../repositories";
 import {BaseSyncService} from "./base-sync.service";
 import {ValidatorService} from "./validator.service";
+import {ResponseEnum} from "../servers";
 
 @bind({scope: BindingScope.SINGLETON})
 export class CategorySyncService extends BaseSyncService{
@@ -17,7 +18,10 @@ export class CategorySyncService extends BaseSyncService{
     @RabbitmqSubscribe({
         exchange: 'amq.topic',
         queue: 'ms-catalogo/sync-videos/category',
-        routingKey: 'model.category.*'
+        routingKey: 'model.category.*',
+        queueOptions: {
+            deadLetterExchange: 'dlx.amq.topic'
+        }
     })
     async handler({data, action}: {data: any, action: any}) {
         await this.sync({
