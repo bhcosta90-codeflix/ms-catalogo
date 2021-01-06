@@ -103,7 +103,7 @@ export class RabbitmqServer extends Context implements Server {
 
   private getSubscribers(): { method: Function, metadata: RabbitmqSubscribeMetada }[] {
     const bindings: Array<Readonly<Binding>> = this.find('services.*');
-    return bindings.map(binding => {
+    const ret = bindings.map(binding => {
       const metadata = MetadataInspector.getAllMethodMetadata<RabbitmqSubscribeMetada>(
           RABBITMQ_SUBSCRIBE_DECORATOR, binding.valueConstructor?.prototype)
       if (!metadata) {
@@ -124,11 +124,13 @@ export class RabbitmqServer extends Context implements Server {
         })
       }
 
-      return methods.reduce((collection: any, item: any) => {
-        collection.push(...item)
-        return collection
-      });
-    });
+      return methods;
+    }).reduce((collection: any, item: any) => {
+      collection.push(...item)
+      return collection
+    }, [])
+
+    return ret;
 
   }
 
