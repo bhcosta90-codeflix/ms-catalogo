@@ -109,7 +109,7 @@ export class RabbitmqServer extends Context implements Server {
       return methods.reduce((collection: any, item: any) => {
         collection.push(...item)
         return collection
-      });
+      }, {});
     })
     console.log(ret)
 
