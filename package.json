@@ -62,7 +62,7 @@
     "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
     "install": "^0.13.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "loopback-connector-esv6": "https://github.com/codeedu/loopback-connector-elastic-search",
     "tslib": "^2.0.0"
   },
